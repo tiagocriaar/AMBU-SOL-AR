@@ -1,0 +1,11 @@
+Pasta com os Códigos Arduino 
+
+1. Você vai logar em sua conta no github;
+
+2. Clique no repositório desejado;
+
+3. Clique em Create new file;
+
+4. Na caixa de texto "Name your file..." você deve digitar o nome do diretório a ser criado, seguido de "/", por exemplo, <mydir/>. Após digitar a /, o diretório já aparece na hierarquia de diretórios;
+
+5. Finalmente, digite o nome do arquivo desejado, escreva o seu conteúdo e, por fim, no final da página clique em Commit new file.
