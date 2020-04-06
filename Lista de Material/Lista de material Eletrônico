@@ -1,0 +1,16 @@
+Lista de Material Eletrônico
+
+01 x Arduino Mega
+01 x Driver para motor de passo 4A 9 a 42V (WD2404 ou similar) - Existem vários modelos compatíveis
+01 x Motor de Passo NEMA23 15 kgf.cm (AK23/15F6FN1.8) - Existem vários modelo compatíveis
+01 x Display Lcd 20x4 com Backlight Azul com I2C
+01 x Fonte de alimentação 12V - 5A ou maior
+02 x Sensor de Velocidade Encoder (ou mais de dois sensores)
+01 x Teclado Matricial De Membrana - 12 Teclas (não confirmado ainda)
+01 x Sensor de pressão (NOVUS)
+01 x interface para Sensor de Pressão (NOVUS)
+02 x Encoder Rotativos (para seleção de funções do painel)
+04 x Botões para seleção de funções
+01 x Chave Liga/desliga
+01 x Cabo de alimentação
+Bateria 12V Chumbo selada 7A (não usar bateria de moto)
