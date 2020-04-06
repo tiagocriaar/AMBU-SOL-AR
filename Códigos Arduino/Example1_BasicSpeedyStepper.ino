@@ -9,7 +9,7 @@
 //
 //  Arduino Mega - Arduino IDE 1.8.10 
 //  Driver de Motor de passo - Passo completo / corrente 1 A
-//  Motor de passo - 180 pulsos/volta (180 PPR) Meu motor é especial ! 
+//  Motor de passo - 180 pulsos/volta (180 SPR) Meu motor é especial ! 
 //
 //  Passos por volta = 180 SPR (steps/rev) normalmente é 200  
 //  SPS  (steps/sec)  (velocidade passos/segundo) 
