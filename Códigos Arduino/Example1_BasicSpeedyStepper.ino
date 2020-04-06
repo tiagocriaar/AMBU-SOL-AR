@@ -1,4 +1,4 @@
-[code]
+
 // ******************************************************************
 //
 // Teste do movimento do Motor usando a Biblioteca SpeedyStepper 
@@ -47,4 +47,4 @@ void loop()
   stepper.moveRelativeInSteps(-3600);                                                          // gira X passos no sentido contrário 
   delay(1000);                                                                                 // atraso de um segundo
 }
-[/code]
+
