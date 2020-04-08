@@ -7,7 +7,7 @@
 //
 //           Arduino Mega 2560  - Arduino IDE 1.8.10
 //           Motor de Passo NEMA23 15 kgf.cm / Driver de motor WD2404
-//           Display LCD 20x4 I2C / teclado com 6 Botões (1 a 6)
+//           Display LCD 20x4 I2C / teclado com 16 Teclas -  Keypad 4x4
 //
 //============================================================================================================================
 //   VERSÃO: 1.19a
@@ -56,8 +56,10 @@ const byte colunas = 4;                            // colunas do teclado
 
 char Keys[linhas][colunas] =                       // Definicao dos valores dos botoes 1 a 6
 {
-  {'1', '3', '5'},
-  {'2', '4', '6'}
+  {'1', '2', '3', 'A'},
+  {'4', '5', '6', 'B'},
+  {'7', '8', '9', 'C'},
+  {'*', '0', '#', 'D'}
 };
 
 byte LinhaPINO[linhas] = {38, 40, 42, 44};         // Linhas do teclado D38 a D44
