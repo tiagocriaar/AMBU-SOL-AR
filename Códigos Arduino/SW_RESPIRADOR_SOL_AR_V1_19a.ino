@@ -51,8 +51,8 @@ int         frequencia_MP = 2000;                  // Vai receber valor de frequ
 
 LiquidCrystal_PCF8574 lcd(0x3F);                   // Endereço I2C - LCD PCF8574
 
-const byte linhas = 2;                             // linhas do teclado
-const byte colunas = 3;                            // colunas do teclado
+const byte linhas = 4;                             // linhas do teclado
+const byte colunas = 4;                            // colunas do teclado
 
 char Keys[linhas][colunas] =                       // Definicao dos valores dos botoes 1 a 6
 {
@@ -60,8 +60,8 @@ char Keys[linhas][colunas] =                       // Definicao dos valores dos 
   {'2', '4', '6'}
 };
 
-byte LinhaPINO[linhas] = {38, 40};                 // Linhas do teclado LIN1(D38) e LIN2(D40)
-byte ColunaPINO[colunas] = {42, 44, 46};           // Colunas do teclado COL1(D42),COL2(D44) e COL3(D46)
+byte LinhaPINO[linhas] = {38, 40, 42, 44};         // Linhas do teclado D38 a D44
+byte ColunaPINO[colunas] = {46, 48, 50, 52};       // Colunas do teclado D46 a D52
 
 Keypad keypad = Keypad( makeKeymap(Keys), LinhaPINO, ColunaPINO, linhas, colunas );  // configuração do teclado
 boolean blink = false;                             // variavel blink
