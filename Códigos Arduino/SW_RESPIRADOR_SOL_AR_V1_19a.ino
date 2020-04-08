@@ -60,11 +60,8 @@ char Keys[linhas][colunas] =                       // Definicao dos valores dos 
   {'2', '4', '6'}
 };
 
-// byte LinhaPINO[linhas] = {38, 40};                 // Linhas do teclado LIN1(D38) e LIN2(D40)
-// byte ColunaPINO[colunas] = {42, 44, 46};           // Colunas do teclado COL1(D42),COL2(D44) e COL3(D46)
-
-byte LinhaPINO[linhas] = {38, 46};                 // Linhas do teclado LIN1(D38) e LIN2(D40)
-byte ColunaPINO[colunas] = {40, 42, 44};           // Colunas do teclado COL1(D42),COL2(D44) e COL3(D46)
+byte LinhaPINO[linhas] = {38, 40};                 // Linhas do teclado LIN1(D38) e LIN2(D40)
+byte ColunaPINO[colunas] = {42, 44, 46};           // Colunas do teclado COL1(D42),COL2(D44) e COL3(D46)
 
 Keypad keypad = Keypad( makeKeymap(Keys), LinhaPINO, ColunaPINO, linhas, colunas );  // configuração do teclado
 boolean blink = false;                             // variavel blink
