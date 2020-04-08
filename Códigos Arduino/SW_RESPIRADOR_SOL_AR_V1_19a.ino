@@ -111,12 +111,12 @@ FlexyStepper stepper;                             // cria objeto stepper
 
 // TECLADO  LIN1(D38)        38
 // TECLADO  LIN2(D40)        40
-// TECLADO  COL1(D42)        42
-// TECLADO  COL2(D44)        44
-// TECLADO  COL3(D46)        46
-// TECLADO                   48
-// TECLADO                   50
-// TECLADO                   52
+// TECLADO  LIN3(D42)        42
+// TECLADO  LIN4(D44)        44
+// TECLADO  COL1(D46)        46
+// TECLADO  COL2(D48)        48
+// TECLADO  COL3(D50)        50
+// TECLADO  COL4(D52)        52
 
 #define     CFC_Inicio       39          // Chave fim de curso início (home position) 
 #define     CFC_Fim          41          // Chave fim de curso fim (limte pressão do AMBU) 
