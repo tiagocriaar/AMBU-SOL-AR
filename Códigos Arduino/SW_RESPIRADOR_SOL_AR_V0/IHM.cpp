@@ -26,19 +26,18 @@ void LCD_posiciona( byte c, byte l ) {
   #endif
 }
 
-void LCD_Inicial (char versao_SOLAR)    // Tela inicial no display LCD
-{
+// Tela inicial no display LCD
+void LCD_Inicial (char versao_SOLAR) {
   LCD_limpa();  
   LCD_posiciona(0, 0);                                    // coluna 0 e linha 0
   lcd.print("*    RESPIRADOR    *");                      // mostra no LCD
   LCD_posiciona(0, 1);                                    // coluna 1 e linha 1
   lcd.print("*  AMBU  Sol e AR  *");                      // mostra no LCD
   LCD_posiciona(0, 2);                                    // coluna 1 e linha 2
-  lcd.print("*   Versao 1.40a   *");                      // mostra no LCD
+  lcd.print("*   Versao Zero    *");                      // mostra no LCD
   LCD_posiciona(0, 3);                                    // coluna 0 e linha 3
   lcd.print("*   Abril - 2020   *");                      // mostra no LCD
   LCD_mostra();  
-  delay (500);                                            // atraso 0,5 segundos
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
@@ -137,9 +136,8 @@ void LCD_Mostra_Valor_Potenciometro_TP (float Tempo_seg_Plato_NOK)      // Mostr
   delay (500);                               // atraso 0,5 seg
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
-void LCD_Mostra_Valor_Pressao_Ambu ()        // Mostra valor do sensor de Pressão do Ambu
-{
+// Mostra valor do sensor de Pressão do Ambu
+void LCD_Mostra_Valor_Pressao_Ambu () {
   LCD_limpa();
   LCD_posiciona(3, 2);                       // coluna 3 e linha 2
   lcd.print("Pressao AMBU:");                // mostra no LCD

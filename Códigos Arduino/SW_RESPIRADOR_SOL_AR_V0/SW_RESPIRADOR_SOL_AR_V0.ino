@@ -48,18 +48,13 @@
   U8G2_ST7920_128X64_F_SW_SPI lcd(U8G2_R0, /* clock=*/ 23, /* data=*/ 17, /* CS=*/ 16);
 #else
   #include <LiquidCrystal_PCF8574.h>       // Biblioteca para LCD com I2C
-  LiquidCrystal_PCF8574 lcd(LCD_address);      // configura endereço do LCD
+  LiquidCrystal_PCF8574 lcd(LCD_address);  // configura endereço do LCD
 #endif
 
-//--------------------------------------------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------------------------------------------
-// Variáveis globais
-
 int   frequencia_MP                 = 2000;  // valor de frequencia para ajuste de velocidade
-
 float potenciometro_Plato           = 1000.0;  // leitura do potenciometro do Tempo de Plato
 int   valor_pot_MP                  = 1000;  // leitura do potenciometro do MP
-float valor_pot_TP                  =  200.0;  // leitura do potenciometro do Tempo de Plato
+float valor_pot_TP                  = 200.0;  // leitura do potenciometro do Tempo de Plato
 int   valor_pot_pressao_AMBU        = 0;     // leitura do Pot de pressão do Ambu - A1
 float valor_pressao_Ambu            = 20.0;    // leitura da pressão do Ambu
 float valor_PPI                     = 0.0;     // leitura da pressão inspiratória de pico em cmH2O
@@ -85,64 +80,68 @@ char  tag_efeito      =    0;
 char  nome_efeito_LN2 =    0;
 char  nome_efeito_LN3 =    0;
 
+/* Objeto para controle do teclado matricial */
 Keypad keypad = Keypad( makeKeymap(Keys), LinhaPINO, ColunaPINO, linhas, colunas );  // configuração do teclado
 
+/* Objeto para controle do encoder rotativo */
 RotaryEncoder encoder(port_Roraty_Encoder1, port_Roraty_Encoder2);              // pin CLK(A)= D6    pin DT(B)= D7  Encoder Rotativo
+long newPos = 0;                           // posição do Encoder Rotativo
 
-int newPos = 0;                           // posição do Encoder Rotativo
+/* Variáveis para controle da compressão do Ambu */
+float velocidade_mm_por_seg = 0.0; // velocidade em mm por segundos
+float percurso_Ambu = 100.0;       // percurso do movimento da aba em mm
+int StepsPerRevolution = 400;      // passos por volta do motor - modo 1/2 micropasso
+int sentidoAmbu = -1;              // sentido do motor = 1 para Ambu, -1 para posição inicial
 
-float     percurso_Ambu         = 100.0;    // percurso do movimento da aba em mm
-int       StepsPerRevolution    = 400;    // passos por volta do motor - modo 1/2 micropasso
-int       sentidoAmbu   = -1;             // sentido do motor = 1 para Ambu, -1 para posição inicial
-float     velocidade_mm_por_seg = 0.0;      // velocidade em mm por segundos
-
+/* Objeto para controle do motor */
 FlexyStepper stepper;                     // cria objeto stepper
 
+void setup() {
 
-//------------------------------------------------------------------------------------------------------------------------------------
-//------------------------------------------------------------------------------------------------------------------------------------
-// Configuração do Hardware
-
-void setup()
-{
-  Serial.begin(9600);                    // Habilita a comunicação com a velocidade de 9600 bits por segundo
-  Serial.println(F("Iniciado"));
-
-  pinMode (Btn_Avanca_MP, INPUT_PULLUP); // Define o pino 21 como entrada digital do botão Avança
-  pinMode (Btn_Recua_MP, INPUT_PULLUP);  // Define o pino 20 como entrada digital do botão Recua
-  pinMode (CFC_Inicio, INPUT_PULLUP);    // Define o pino 39 como entrada digital da chave CFC_Inicio
-  pinMode (CFC_Fim , INPUT_PULLUP);      // Define o pino 41 como entrada digitalda chave CFC_Fim
-  pinMode (enable_MP, OUTPUT);           // Define o pino 24 como saída digital de habilitação do driver
-  pinMode (dir_MP, OUTPUT);              // Define o pino 25 como saída digital de sentido de giro
-  pinMode (pulso_MP, OUTPUT);            // Define 3 pino como saída do trem de pulso
-
-  digitalWrite  (dir_MP, HIGH);          // Define sentido de giro inicial como avançar
-
-  stepper.connectToPins(pulso_MP , dir_MP);              // configura pinos no driver WD2404
-  stepper.setStepsPerRevolution (StepsPerRevolution);    // configura passos por volta para o Driver do motor
-  stepper.setStepsPerMillimeter(16);                     // meio micropasso - 400 passos/25mm => 16 passos/mm
-
-  int error;                             // variável de erro para o Display LCD
-  
   /* Inicia LCD */  
   #if defined(IHM_RAMPS_128X64)
     lcd.begin();
   #else
-    Wire.begin();                          // Inicializa interface do LCD
-    Wire.beginTransmission(LCD_address);   // incializa interface I2C
-    error = Wire.endTransmission();        // termina transmissão se houver erro
-    lcd.begin(20, 4);                      // inicializa Display LCD 20x4
-
+    lcd.begin(20, 4);     
   #endif  
-  LCD_Inicial (versao_SOLAR);            // Tela inicial no display LCD
-  delay (1000);                          // atraso 2 segundos
 
+  /* Tela incialdo IHM */
+  LCD_Inicial (versao_SOLAR);            // Tela inicial no display LCD
+
+  /* Inicia comunicação serial para debug pelo monitor serial */
+  Serial.begin(9600);
+  Serial.println(F("Iniciado"));
+
+  /* Inicia portas de entrada */
+  pinMode (Btn_Avanca_MP, INPUT_PULLUP); // Define o pino 21 como entrada digital do botão Avança
+  pinMode (Btn_Recua_MP, INPUT_PULLUP);  // Define o pino 20 como entrada digital do botão Recua
+  pinMode (CFC_Inicio, INPUT_PULLUP);    // Define o pino 39 como entrada digital da chave CFC_Inicio
+  pinMode (CFC_Fim , INPUT_PULLUP);      // Define o pino 41 como entrada digitalda chave CFC_Fim
+
+  /* Inicia portas de saída */
+  pinMode (enable_MP, OUTPUT);           // Define o pino 24 como saída digital de habilitação do driver  
+  digitalWrite  (enable_MP, HIGH);       // Inicia motor de passo desabilitado
+  pinMode (dir_MP, OUTPUT);              // Define o pino 25 como saída digital de sentido de giro
+  digitalWrite  (dir_MP, HIGH);          // Define sentido de giro inicial como avançar
+  pinMode (pulso_MP, OUTPUT);            // Define 3 pino como saída do trem de pulso
+  digitalWrite  (dir_MP, LOW);           // Inicia pulso em nivel baixo
+
+  /* Configurações iniciais para o motor de passo */
+  stepper.connectToPins(pulso_MP , dir_MP);              // configura pinos no driver WD2404
+  stepper.setStepsPerRevolution (StepsPerRevolution);    // configura passos por volta para o Driver do motor
+  stepper.setStepsPerMillimeter(16);                     // meio micropasso - 400 passos/25mm => 16 passos/mm
+
+  /* Inicia teclado matricial */
   keypad.addEventListener(keypadEvent);  // evento para leitura do teclado
 
-  attachInterrupt(digitalPinToInterrupt(Btn_Avanca_MP), procedimento_avanca_MP, FALLING);             // Habilita interrupção no botão de avanço
-  attachInterrupt(digitalPinToInterrupt(Btn_Recua_MP) , procedimento_recua_MP, FALLING);              // Habilita interrupção no botão de recuo
+  /* Interrupções */
+  attachInterrupt(digitalPinToInterrupt(Btn_Avanca_MP), procedimento_avanca_MP, FALLING); // Habilita interrupção no botão de avanço
+  attachInterrupt(digitalPinToInterrupt(Btn_Recua_MP) , procedimento_recua_MP, FALLING);  // Habilita interrupção no botão de recuo
+
+  /* Atraso 2 segundos, mostrando tela inicial do IHM */
+  delay (1000); 
   Serial.println(F("Setup concluído"));
-} //FIM do void setup
+} 
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------------
@@ -205,69 +204,6 @@ void configura_Parametros_Respirador ()
 
 }
 
-
-
-//--------------------------------------------------------------------------------------------------------------------------------------
-//  Comprimento do eixo sem fim = 200 mm
-//  Curso para compressão do AMBU = 100 mm ou 130 mm
-//  FUSO 25 mm - (25 mm de avanço por volta)
-//  Driver WED2404 configurado para 1/2 passo = 400 passos/volta
-//  Para avançar os 100 mm são necessários 4 voltas no motor ou 4 x 400 passos = 1600 passos
-//  Para avançar os 130 mm são necessários 5,2 voltas no motor ou 5,2 x 400 passos = 2080 passos
-
-//--------------------------------------------------------------------------------------------------------------------------------------
-// Faça testes iniciais do motor sem o mecanismo!
-
-void inicializa_Ambu()                                                            // posiciona a aba na posição inicial
-{
-  LCD_inicializa_Respirador ();                                                   // Print inicializa Ambu no LCD
-  sentidoAmbu = -1;                                                               // sentido do motor = -1 para posição inicial
-  percurso_Ambu = 100;                                                            // maxima distancia percorrida em milimetros
-  ativa_Driver_Motor();                                                           // ativa driver do motor
-  stepper.setCurrentPositionInMillimeters (0);                                    // zera a posição em milimetros
-  bool limitSwitchFlag = false;                                                   // flag para switch de limite
-
-  if (digitalRead(CFC_Inicio) == HIGH)                                            // se chave CFC_Inicio não foi acionada
-  {
-    stepper.setSpeedInMillimetersPerSecond (50);                                  // configura velocidade do motor em mm/segundo
-    stepper.setAccelerationInMillimetersPerSecondPerSecond(200);                  // configura aceleraçao do motor - mm/s2
-    stepper.setTargetPositionInMillimeters (percurso_Ambu * sentidoAmbu );        // maxima distancia percorrida em milimetros = 100 (4 voltas)
-
-    while (!stepper.motionComplete())                                             // enquanto o motor não avançar todo percurso
-    {
-      stepper.processMovement();                                                  // gira o motor
-
-      if (digitalRead(CFC_Inicio ) == LOW && (limitSwitchFlag == false))          // se a chave CFC_Inicio for acionada
-      {
-        stepper.setTargetPositionToStop();                                        // para o motor
-        limitSwitchFlag = true;                                                   // muda o estado do flag
-        LCD_posiciona(3, 3);                                                      // LCD coluna 3 e linha 3
-        lcd.print("CFC Inicio OK    ");                                           // mostra no LCD
-        LCD_mostra();
-      }
-    }
-    if ((stepper.motionComplete () == true) && (limitSwitchFlag == false))        // se a chave CFC_Inicio nunca for acionada
-    {
-      LCD_posiciona(1, 3);                                                        // LCD coluna 1 e linha 3
-      lcd.print("CFC Inicio not OK");                                             // mostra no LCD
-      LCD_mostra();
-    }
-  }
-  else                                                                            // se a chave CFC_Inicio estiver acionada
-  {
-    stepper.setCurrentPositionInMillimeters (0);                                  // zera a posição em mm
-    limitSwitchFlag = true;                                                       // muda o estado do flag
-    LCD_posiciona(3, 3);                                                          // LCD coluna 3 e linha 3
-    lcd.print("CFC Inicio OK    ");                                               // mostra no LCD
-    LCD_mostra();
-  }
-}
-
-//---------------------------------------------------------------------------------------------------------------------------------------
-// Faça testes iniciais do motor sem o mecanismo!
-
-
-
 //---------------------------------------------------------------------------------------------------------------------------------------
 void respiradorAmbu ()                                                    // simulação do movimento do Ambu
 {
@@ -278,7 +214,7 @@ void respiradorAmbu ()                                                    // sim
     velocidade_mm_por_seg = 125.0;                                        // velocidade do motor em mm por segundos
     percurso_Ambu = 100;                                                  // percurso do movimento da aba em mm
     motorPressionaAmbu();                                                 // movimenta a aba de pressão do Ambu
-    delay(tempo_plato * 1000);                                            // atraso do tempo plato em ms (ex:0,25 x 1000)
+    delay((unsigned long )(tempo_plato * 1000.0));                                            // atraso do tempo plato em ms (ex:0,25 x 1000)
     sentidoAmbu = -1;                                                     // sentido do motor = -1 oposto ao Ambu
     velocidade_mm_por_seg = velocidade_mm_por_seg / relacao_insp_exp;     // velocidade do motor em mm por segundos
     motorPressionaAmbu();                                                 // movimenta a aba de pressão do Ambu
@@ -442,104 +378,38 @@ void procedimento_mostrar_causas_na_tela_do_micro(int cod_causa)  // mostrar cau
 }
 
 void executaComando( char c ) {
-  if (c == '1')                         // Botão 1 - LIGA
-  {
-    Serial.println("tecla 1");
+  Serial.print("tecla ");
+  Serial.print(c);
+  if (c == '1') {                        // Botão 1 - LIGA
     // LCD_Ligando_MP();
     // delay(3000);
     // procedimento_ligar();
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '2')                         // Botao 2 - PARAR
-  {
-    Serial.println("tecla 2");
+  } else if (c == '2') {                        // Botao 2 - PARAR
     // LCD_Desligando_MP();
     // delay(1000);
     // procedimento_parar();
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '3')                         // Botao 3
-  {
-    Serial.println("tecla 3");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '4')                                    // Botao 4 para Presionar Ambu
-  {
-    Serial.println("tecla 4 - Inicializa Ambu");
+  } else if (c == '4') {                                   // Botao 4 para Presionar Ambu
+    Serial.print(" Inicializa Ambu");
     inicializa_Ambu();                               // posiciona a aba na posição inicial - linha 322
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '5')                                    // Botao 5
-  {
-    Serial.println("tecla 5");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '6')                         // Botao 6
-  {
-    Serial.println("tecla 6");
+  } else if (c == '6') {                        // Botao 6
     respiradorAmbu ();                   // em andamento - linha 423
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '7')                         // Botao 7
-  {
-    Serial.println("tecla 7");
+  } else if (c == '7') {                        // Botao 7
     leitura_pressao_Ambu () ;             // linha 276
     LCD_Mostra_Valor_Pressao_Ambu ();     // linha 467
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '8')                         // Botao 8
-  {
-    Serial.println("tecla 8");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '9')                         // Botao 9
-  {
-    Serial.println("tecla 9");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '0')                         // Botao 0
-  {
-    Serial.println("tecla 0");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '*')                         // Botao *
-  {
-    Serial.println("tecla *");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == '#')                         // Botao #
-  {
-    Serial.println("tecla #");
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == 'A')                         // Botao A
-  {
-    Serial.println("tecla A");
+  } else if (c == 'A') {                         // Botao A
     sentidoAmbu = 1;                                                   // sentido do motor = 1 para Ambu
     velocidade_mm_por_seg = 50;                                        // velocidade do motor em mm por segundos
     percurso_Ambu = 100;                                               // percurso do movimento da aba em mm
     motorPressionaAmbu();
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == 'B')                         // Botao B
-  {
-    Serial.println("tecla B");
+  } else if (c == 'B') {                         // Botao B
     LCD_mostra_Parametros();             // simulaçao da tela
     respiradorAmbu();                    // simulação do movimento do Ambu - linha 423
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == 'C')                         // Botao C
-  {
-    Serial.println("tecla C");
+  } else if (c == 'C') {                         // Botao C
     LCD_mostra_Parametros();             // linha 471
-  }
-  //-------------------------------------------------------------------------------
-  else if (c == 'D')                         // Botao D
-  {
-    Serial.println("tecla D");
+  } else if (c == 'D') {                        // Botao D
     configura_Parametros_Respirador();   // linha 380 - em andamento
   }
-  //-------------------------------------------------------------------------------  
+  Serial.println();
 }
 
 // ------------------------- Funções do Teclado ---------------------------------------------

@@ -3,21 +3,18 @@
 
 #include "Arduino.h"
 
-//#define IHM_RAMPS_128X64
-//#define RAMPS_DRIVER
+/* Comentar quando não estiver usando o IHM Gráfico */ 
+#define IHM_RAMPS_128X64
 
-const char  versao_SOLAR    =      " Versao 1_40a";
+/* Comentar quando não estiver usando a RAMPS para o driver do motor */
+#define RAMPS_DRIVER
 
-//--------------------------------------------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------------------------------------------
-// Rótulos das pinagens
+const char versao_SOLAR[] = " Versao Zero";
 
 const byte pot_pressao_AMBU  =  A1;         // Leitura de pressão do Ambu
 const byte pot_paciente      =  A2;         // Leitura de pressão do Paciente
 const byte pot_vacuo         =  A3;         // Leitura de vácuo
 const byte pot_Plato         =  A4;         // Regulagem de tempo do platô
-
-
 
 //#define PIN_Y_MIN 14
 //#define PIN_Y_MAX 15
@@ -32,23 +29,9 @@ const byte pot_Plato         =  A4;         // Regulagem de tempo do platô
   const byte port_Roraty_Encoder2= 7;
 #endif
 
-
-// TX0                           0           // FUTURO
-// RX0                           1           // FUTURO
-const byte     Btn_Avanca_MP   =  2;          // Botão de avanço do motor de passo (pino 2)
-const byte     Btn_Recua_MP    =  3;          // Botão de recuo do motor de passo (pino  3)
-const byte     led_pino        = 13;          // Pino do LED Arduino Mega
-
-// Rotary Encoder A             06
-// Rotary Encoder B             07
-// RS485                        14           // FUTURO
-// RS485                        15           // FUTURO
-
-// const int  Btn_Liga_MP     = 18;          // Botão para ligar o motor de passo
-// const int  Btn_Para_MP     = 19;          // Botão de parada do motor de passo
-
-// DISPLAY SDA                  20           // DISPLAY SDA
-// DISPLAY SCL                  21           // DISPLAY SCL
+const byte Btn_Avanca_MP   =  2;          // Botão de avanço do motor de passo (pino 2)
+const byte Btn_Recua_MP    =  3;          // Botão de recuo do motor de passo (pino  3)
+const byte led_pino        = 13;          // Pino do LED Arduino Mega
 
 #if defined(RAMPS_DRIVER)
   const byte enable_MP       = A2;          // Habilita o driver do motor de passo (pino 24)
@@ -74,7 +57,6 @@ const byte     R1_GER          = 30;          // Relé Geral
   const byte     R4_V_AMBU       = 33;          // Relé de Valvula do Ambu
   const byte     R6_V_AR         = 35;          // Relé de Ar
 #endif
-
 const byte     R3_RET          = 32;          // Relé de retorno do motor de passo
 const byte     R5_V_02         = 34;          // Relé de oxigênio
 const byte     R7_BYPASS       = 36;          // Relé de By-pass
