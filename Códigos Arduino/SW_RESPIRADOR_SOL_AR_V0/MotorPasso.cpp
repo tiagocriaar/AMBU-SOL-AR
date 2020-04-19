@@ -4,14 +4,14 @@
 //---------------------------------------- Controle do Motor de Passo ------------------------------------------------------------------
 void desativa_Driver_Motor()
 {
-  digitalWrite(enable_MP, LOW);           // Desativa o driver WD2404 = HIGH
+  digitalWrite(enable_MP, HIGH);           // Desativa o driver WD2404 = HIGH
   delay (10);                             // Atraso de 10 milisegundos
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ativa_Driver_Motor()
 {
-  digitalWrite(enable_MP, HIGH);         // Ativa o driver WD2404 = LOW
+  digitalWrite(enable_MP, LOW);         // Ativa o driver WD2404 = LOW
   delay (10);                            // Atraso de 10  milisegundos
 }
 
@@ -42,4 +42,52 @@ void procedimento_parar()
 {
   digitalWrite(enable_MP, HIGH);         // Desabilita driver
   Serial.println("Motor Parado");        // Mensagem no monitor: "Motor parado"
+}
+
+void motorPressionaAmbu()                                                                  // movimenta a aba de pressão do Ambu
+{
+
+  ativa_Driver_Motor();                                                                     // ativa driver do motor
+    
+  stepper.setCurrentPositionInMillimeters (0);                                              // zera a posição em milimetros
+  bool stopFlag = false;
+
+  stepper.setSpeedInMillimetersPerSecond (velocidade_mm_por_seg);                           // configura velocidade do motor em mm/segundo
+  stepper.setAccelerationInMillimetersPerSecondPerSecond(velocidade_mm_por_seg * 2);        // configura aceleraçao do motor - mm/seg 2
+  stepper.setTargetPositionInMillimeters (percurso_Ambu * sentidoAmbu );                    // maxima distancia percorrida em milimetros = 100 (4 voltas)
+
+  if ((digitalRead(CFC_Fim) == HIGH) && (sentidoAmbu == 1))                                 // se chave CFC_Fim não foi acionada
+  {
+    while (!stepper.motionComplete())                                                       // enquanto o motor não avançar todo percurso
+    {
+      stepper.processMovement();                                                            // gira o motor
+
+      /*if (stepper.getCurrentPositionInMillimeters() == 100)                           // se a posição precorrida for igual a 90 mm
+        {
+        stepper.setSpeedInMillimetersPerSecond (velocidade_mm_por_seg/2);               // diminua a  velocidade do motor em mm/segundo
+        }*/
+
+      if ((digitalRead(CFC_Fim) == LOW) && (stopFlag == false))                            // se a chave CFC_Fim for acionada
+      {
+        stepper.setTargetPositionToStop();                                                // para o motor
+        //stepper.setCurrentPositionInMillimeters (0);                                    // zera a posição em mm
+        stopFlag = true;                                                                  // altera o estado do fla
+      }
+    }
+  }
+
+  if ((digitalRead(CFC_Inicio) == HIGH) && (sentidoAmbu == -1))                           // se chave CFC Inicio não foi acionada
+  {
+    while (!stepper.motionComplete())                                                       // enquanto o motor não avançar todo percurso
+    {
+      stepper.processMovement();                                                            // gira o motor
+
+      if ((digitalRead(CFC_Inicio) == LOW) && (stopFlag == false))                            // se a chave CFC_Fim for acionada
+      {
+        stepper.setTargetPositionToStop();                                                // para o motor
+        //stepper.setCurrentPositionInMillimeters (0);                                    // zera a posição em mm
+        stopFlag = true;                                                                  // altera o estado do fla
+      }
+    }
+  }
 }

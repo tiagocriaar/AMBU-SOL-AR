@@ -54,8 +54,7 @@ void LCD_inicializa_Respirador ()                         // Print inicializa Am
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_mostra_Parametros ()                             // Tela de configuração dos Parametros (favor não alterar)
-
+void LCD_mostra_Parametros()                             // Tela de configuração dos Parametros (favor não alterar)
 {
   LCD_limpa();
   LCD_posiciona(0, 0);                                    // coluna 0 e linha 0

@@ -4,18 +4,23 @@
 #include "Arduino.h"
 
 #define IHM_RAMPS_128X64
-//#define RAMPS_DRIVER
+#define RAMPS_DRIVER
+
 const char  versao_SOLAR    =      " Versao 1_40a";
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------------------------------------------
 // Rótulos das pinagens
 
-const byte   pot_MP            =  A0;         // POTENCIÔMETRO VEL MOTOR DE PASSO
-const byte   pot_pressao_AMBU  =  A1;         // Leitura de pressão do Ambu
-const byte   pot_paciente      =  A2;         // Leitura de pressão do Paciente
-const byte   pot_vacuo         =  A3;         // Leitura de vácuo
-const byte   pot_Plato         =  A4;         // Regulagem de tempo do platô
+const byte pot_pressao_AMBU  =  A1;         // Leitura de pressão do Ambu
+const byte pot_paciente      =  A2;         // Leitura de pressão do Paciente
+const byte pot_vacuo         =  A3;         // Leitura de vácuo
+const byte pot_Plato         =  A4;         // Regulagem de tempo do platô
+
+
+
+//#define PIN_Y_MIN 14
+//#define PIN_Y_MAX 15
 
 #if defined(IHM_RAMPS_128X64)
   const byte port_Roraty_Encoder1  = 31;
@@ -32,7 +37,6 @@ const byte   pot_Plato         =  A4;         // Regulagem de tempo do platô
 // RX0                           1           // FUTURO
 const byte     Btn_Avanca_MP   =  2;          // Botão de avanço do motor de passo (pino 2)
 const byte     Btn_Recua_MP    =  3;          // Botão de recuo do motor de passo (pino  3)
-const byte     pulso_MP        =  5;          // Trem de pulso pra ajuste de velocidade (pino 5)
 const byte     led_pino        = 13;          // Pino do LED Arduino Mega
 
 // Rotary Encoder A             06
@@ -46,8 +50,17 @@ const byte     led_pino        = 13;          // Pino do LED Arduino Mega
 // DISPLAY SDA                  20           // DISPLAY SDA
 // DISPLAY SCL                  21           // DISPLAY SCL
 
-const byte     enable_MP       = 24;          // Habilita o driver do motor de passo (pino 24)
-const byte     dir_MP          = 25;          // Define a direçao do motor de passo  (pino 25)
+#if defined(RAMPS_DRIVER)
+  const byte enable_MP       = A2;          // Habilita o driver do motor de passo (pino 24)
+  const byte dir_MP          = A7;          // Define a direçao do motor de passo  (pino 25)
+  const byte pulso_MP        = A6;          // Trem de pulso pra ajuste de velocidade (pino 5)
+  const byte pot_MP          = A5;         // POTENCIÔMETRO VEL MOTOR DE PASSO
+#else
+  const byte pot_MP          = A0;         // POTENCIÔMETRO VEL MOTOR DE PASSO
+  const byte enable_MP       = 24;          // Habilita o driver do motor de passo (pino 24)
+  const byte dir_MP          = 25;          // Define a direçao do motor de passo  (pino 25)
+  const byte pulso_MP        =  5;          // Trem de pulso pra ajuste de velocidade (pino 5)
+#endif
 
 const byte     Falha_E         = 28;          // Sinal de falha de energia (ligar nobreak)
 const byte     TESTE_G         = 29;          // Botão de teste geral
