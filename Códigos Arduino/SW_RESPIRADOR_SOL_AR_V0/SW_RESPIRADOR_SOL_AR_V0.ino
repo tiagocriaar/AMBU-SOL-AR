@@ -85,7 +85,8 @@ Keypad keypad = Keypad( makeKeymap(Keys), LinhaPINO, ColunaPINO, linhas, colunas
 
 /* Objeto para controle do encoder rotativo */
 RotaryEncoder encoder(port_Roraty_Encoder1, port_Roraty_Encoder2);              // pin CLK(A)= D6    pin DT(B)= D7  Encoder Rotativo
-long newPos = 0;                           // posição do Encoder Rotativo
+long encoderPos = 0;      // posição do Encoder Rotativo
+int ponteiro_selecao = 0; // ponteiro de seleção de parametros
 
 /* Variáveis para controle da compressão do Ambu */
 float velocidade_mm_por_seg = 0.0; // velocidade em mm por segundos
@@ -147,9 +148,7 @@ void setup() {
 //--------------------------------------------------------------------------------------------------------------------------------------
 // Função principal
 
-void loop()
-{
-  //keypad.getKey();            // faz varredura dos botões do teclado
+void loop() {
   leitura_Encoder_Rotativo();           // faz a leitura do Encoder Rotativo
   if (Serial.available()>0){
     executaComando( Serial.read() );  
@@ -158,22 +157,120 @@ void loop()
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------- Declaração das Funções ----------------------------------------------------------------------
-void leitura_Encoder_Rotativo ()
-{
-  static int pos = 0;                     // lendo os contatos do  encoder
+void leitura_Encoder_Rotativo () {
+  static int posAnterior = 0;                     // lendo os contatos do  encoder
   encoder.tick();
-  newPos = encoder.getPosition();
+  int pos = encoder.getPosition();
 
-  if (pos != newPos)                      // se a posição foi alterada
-  {
-    //Serial.println(newPos);            // imprime a nova posição
-    pos = newPos;
+  if ( pos != posAnterior ) {                     // se a posição foi alterada
+    if (pos > posAnterior){
+      encoderPos++;
+    } else {
+      encoderPos--;
+    }
+    posAnterior = pos;
+    if (ponteiro_selecao == 1) configura_frequencia_respiratoria ();
+    if (ponteiro_selecao == 2) configura_pressao_ambu ();
+    if (ponteiro_selecao == 3) configura_tempo_inspiracao ();
+    if (ponteiro_selecao == 4) configura_relacao_IE ();
+    if (ponteiro_selecao == 5) configura_tempo_plato ();
+    //Serial.println(encoderPos);            // imprime a nova posição
   }
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------------
-void procedimento_ler_pot_MP()
+void configura_frequencia_respiratoria ()
 {
+  LCD_posiciona(11, 0);                                                   // coluna 11 e linha 0
+  lcd.print(">");                                                         // mostra no LCD
+  frequencia_respiratoria = 16 + encoderPos;                                  // frequencia_respiratoria inicial = 16
+  if (frequencia_respiratoria < 10 )
+  {
+    if (frequencia_respiratoria < 5 ) frequencia_respiratoria = 5 ;       // frequencia minima = 5
+    LCD_posiciona(12, 0);                                                 // coluna 12 e linha 0
+    lcd.print(" ");                                                       // mostra no LCD
+    LCD_posiciona(13, 0);                                                 // coluna 13 e linha 0
+    lcd.print(frequencia_respiratoria);                                   // mostra no LCD
+  }
+  else
+  {
+    if (frequencia_respiratoria > 60) frequencia_respiratoria = 60 ;      // frequencia maxima 60
+    LCD_posiciona(12, 0);                                                 // coluna 12 e linha 0
+    lcd.print(frequencia_respiratoria);                                   // mostra no LCD
+  }
+  LCD_mostra();
+  delay (50);                                                             // atraso 50 ms
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------
+void configura_pressao_ambu ()
+{
+  LCD_posiciona(9, 1);                                                   // coluna 9 e linha 1
+  lcd.print(">");                                                        // mostra no LCD
+  valor_pressao_Ambu  = 20 + encoderPos;                                     // pressão inicial = 20
+
+  if (valor_pressao_Ambu  < 10 ) valor_pressao_Ambu = 10 ;               // pressão no Ambu minima = 10
+  if (valor_pressao_Ambu > 60) valor_pressao_Ambu = 60 ;                 // pressão no Ambu maxima 60
+
+  LCD_posiciona(10, 1);                                                  // coluna 10 e linha 1
+  lcd.print(valor_pressao_Ambu, 1);                                      // mostra no LCD
+  LCD_mostra();
+  delay (50);                                                            // atraso 50 ms
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+void configura_tempo_inspiracao ()
+{
+  LCD_posiciona(4, 2);                                                   // coluna 4 e linha 2
+  lcd.print(">");                                                        // mostra no LCD
+  tempo_inspiracao  = 1.0 + (encoderPos * 0.1) ;                             // tempo_inspiracao inicial = 1.0
+
+  if (tempo_inspiracao  < 0.9 ) tempo_inspiracao = 0.9 ;                 // tempo_inspiracao minima = 0.9
+  if (tempo_inspiracao  > 1.3 ) tempo_inspiracao = 1.3 ;                 // tempo_inspiracao maxima = 1.3
+
+  LCD_posiciona(5, 2);                                                   // coluna 5 e linha 2
+  lcd.print(tempo_inspiracao, 1);                                        // mostra no LCD
+  LCD_mostra();
+  delay (50);                                                            // atraso 50 ms
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+void configura_relacao_IE ()
+{
+  LCD_posiciona(14, 2);                                                  // coluna 14 e linha 2
+  lcd.print(">");                                                        // mostra no LCD
+  float relacao_insp_exp_TEMP = relacao_insp_exp;
+  relacao_insp_exp  = 2.5 + (encoderPos * 0.5) ;                             // relacao_insp_exp inicial = 2.5
+
+  if ((relacao_insp_exp < 1 )||(relacao_insp_exp  > 3 )) { 
+    relacao_insp_exp = relacao_insp_exp_TEMP;
+    encoderPos = 0;
+  }                     
+
+  LCD_posiciona(17, 2);                                                  // coluna 17 e linha 2
+  lcd.print(relacao_insp_exp, 1);                                        // mostra no LCD
+  LCD_mostra();
+  delay (50);                                                            // atraso 50 ms
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------
+void configura_tempo_plato ()
+{
+  LCD_posiciona(6, 3);                                                  // coluna 6 e linha 3
+  lcd.print(">");                                                       // mostra no LCD
+  tempo_plato  = 0.25 + (encoderPos * 0.05) ;                               // tempo_plato inicial = 0.25
+
+  if (tempo_plato  < 0.1 ) tempo_plato = 0.1 ;                          // tempo_plato minima = 0.1
+  if (tempo_plato  > 0.3 ) tempo_plato = 0.3 ;                          // tempo_plato maxima = 0.3
+
+  LCD_posiciona(7, 3);                                                  // coluna 17 e linha 2
+  lcd.print(tempo_plato, 2);                                            // mostra no LCD
+  LCD_mostra();
+  delay (50);                                                           // atraso 50 ms
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------------------------
+void procedimento_ler_pot_MP() {
   valor_pot_MP  = analogRead(pot_MP);                        // Lê o valor da tensão no potenciometro
   frequencia_MP = map(valor_pot_MP, 0, 1023, 2000, 4000);    // Converte a tensão em frequencia
 }
@@ -186,21 +283,20 @@ void leitura_pressao_Ambu ()                                                // l
   return;
 }
 
-//---------------------------------------------------------------------------------------------------------------------------------------
-void configura_Parametros_Respirador ()
-{
-  frequencia_respiratoria = frequencia_respiratoria + newPos;
+void configura_Parametros_Respirador () {
+  frequencia_respiratoria = frequencia_respiratoria + encoderPos;
   Serial.print("Freq. Resp: "); Serial.println (frequencia_respiratoria);
-  newPos = 0;
+  encoderPos = 0;
 
-
-  /*float valor_pressao_Ambu            = 20;    // leitura da pressão do Ambu
+  /*
+    float valor_pressao_Ambu            = 20;    // leitura da pressão do Ambu
     float valor_PPI                     = 0;     // leitura da pressão inspiratória de pico em cmH2O
     int   frequencia_respiratoria       = 16;    // frequencia respiratoria
     float tempo_inspiracao              = 1.0;   // tempo de inspiração
     float tempo_expiracao               = 2.5;   // tempo de expiração
     float relacao_insp_exp              = 2.5;   // tempo de expiração
-    float tempo_plato                   = 0.25;  // tempo de plato*/
+    float tempo_plato                   = 0.25;  // tempo de plato
+  */
 
 }
 
@@ -361,13 +457,11 @@ void procedimento_tag_efeito(int cod_efeito, char tag_efeito, char nome_efeito_L
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------
-void procedimento_mostrar_causas_na_tela_do_micro(int cod_causa)  // mostrar causas na tela do micro
-{
+// mostrar causas na tela do micro
+void procedimento_mostrar_causas_na_tela_do_micro(int cod_causa) {
   // cod_causa=0;
   // Serial.print("CÓDIGO DA CAUSA = ");
-  for (cod_causa = 0; cod_causa < 15; cod_causa = cod_causa++)
-  {
+  for (cod_causa = 0; cod_causa < 15; cod_causa = cod_causa++) {
     // Serial.println("-------------------");
     // Serial.print  (cod_causa, HEX);
     // Serial.print("\t"); // imprime uma tabulação (TAB)
@@ -408,14 +502,18 @@ void executaComando( char c ) {
     LCD_mostra_Parametros();             // linha 471
   } else if (c == 'D') {                        // Botao D
     configura_Parametros_Respirador();   // linha 380 - em andamento
+  } else if (c == '*') {                         // Botao *
+    ponteiro_selecao++;
+    encoderPos = 0;
+    if (ponteiro_selecao > 5) ponteiro_selecao = 0;         // de 0 a 5 somente
+    LCD_mostra_selecao_parametro();                        // mostra o parametro selecionado
   }
   Serial.println();
 }
 
 // ------------------------- Funções do Teclado ---------------------------------------------
 
-void keypadEvent(KeypadEvent key)
-{
+void keypadEvent(KeypadEvent key) {
   if ( keypad.getState() == PRESSED ) {
       executaComando(key);      
   }

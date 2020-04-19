@@ -18,7 +18,9 @@ extern float valor_pot_TP;
 extern float potenciometro_Plato;
 extern float Tempo_seg_Plato_NOK;
 extern float valor_pot_TP;
+extern int ponteiro_selecao;
 
+void LCD_mostra_selecao_parametro ();
 void LCD_mostra();
 void LCD_posiciona( byte c, byte l );
 void procedimento_ler_pot_TP(float valor_pot_TP, float potenciometro_Plato, float Tempo_seg_Plato_NOK); //Lê a entrada do potenciômetro do Tempo de Plato

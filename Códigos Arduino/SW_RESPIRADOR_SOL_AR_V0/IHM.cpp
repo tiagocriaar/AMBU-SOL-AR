@@ -40,9 +40,8 @@ void LCD_Inicial (char versao_SOLAR) {
   LCD_mostra();  
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_inicializa_Respirador ()                         // Print inicializa Ambu no LCD
-{
+// Print inicializa Ambu no LCD
+void LCD_inicializa_Respirador () {
   LCD_limpa();
   LCD_posiciona(0, 0);                                    // coluna 1 e linha 1
   lcd.print("*  AMBU  Sol e AR  *");                      // mostra no LCD
@@ -52,9 +51,8 @@ void LCD_inicializa_Respirador ()                         // Print inicializa Am
   delay (500);                                            // atraso 0,5 segundos
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_mostra_Parametros()                             // Tela de configuração dos Parametros (favor não alterar)
-{
+// Tela de configuração dos Parametros (favor não alterar)
+void LCD_mostra_Parametros() {
   LCD_limpa();
   LCD_posiciona(0, 0);                                    // coluna 0 e linha 0
   lcd.print("FREQ.RESP: ");                               // mostra no LCD
@@ -87,9 +85,8 @@ void LCD_mostra_Parametros()                             // Tela de configuraç�
   LCD_mostra();
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_Teste_MP ()                                     // Tela de testes do MP
-{
+// Tela de testes do MP
+void LCD_Teste_MP () {
   LCD_limpa();
   LCD_posiciona(0, 0);                                   // coluna 0 e linha 0
   lcd.print("--------------------");                     // mostra no LCD
@@ -103,9 +100,8 @@ void LCD_Teste_MP ()                                     // Tela de testes do MP
   delay (500);                                           // atraso 0,5 segundos
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_Teste_Potenciometro_TP ()    // Tela de teste do potenciometro do Tempo de Plato
-{
+// Tela de teste do potenciometro do Tempo de Plato
+void LCD_Teste_Potenciometro_TP () {
   LCD_limpa();
   LCD_posiciona(0, 0);                                  // coluna 0 e linha 0
   lcd.print("      AJUSTE O      ");                    // mostra no LCD
@@ -119,9 +115,8 @@ void LCD_Teste_Potenciometro_TP ()    // Tela de teste do potenciometro do Tempo
   delay (500);                                          // atraso 0,5 segundos
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_Mostra_Valor_Potenciometro_TP (float Tempo_seg_Plato_NOK)      // Mostra o valor do potenciômetro para o plato
-{
+// Mostra o valor do potenciômetro para o plato
+void LCD_Mostra_Valor_Potenciometro_TP (float Tempo_seg_Plato_NOK) {
   procedimento_ler_pot_TP(valor_pot_TP, potenciometro_Plato, Tempo_seg_Plato_NOK);
   LCD_limpa();
   LCD_posiciona(0, 0);                       // coluna 0 e linha 0
@@ -149,9 +144,7 @@ void LCD_Mostra_Valor_Pressao_Ambu () {
   delay(500);                                // atraso 0,5 seg
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_TECLA_A_Pressionada (float Tempo_seg_Plato_OK)
-{
+void LCD_TECLA_A_Pressionada (float Tempo_seg_Plato_OK) {
   LCD_Mostra_Valor_Potenciometro_TP (Tempo_seg_Plato_NOK);           // Mostra o valor do potenciômetro para o plato
   delay (500);                               // atraso 0,5 segundos
   LCD_limpa();
@@ -167,9 +160,8 @@ void LCD_TECLA_A_Pressionada (float Tempo_seg_Plato_OK)
   delay (500);                               // atraso 0,5 segundos
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_iniciaMotor ()                      // Print Inicia Motor
-{
+// Print Inicia Motor
+void LCD_iniciaMotor () {
   LCD_limpa();
   LCD_posiciona(0, 0);                       // coluna 0 e linha 0
   lcd.print("--------------------");         // mostra no LCD
@@ -183,9 +175,8 @@ void LCD_iniciaMotor ()                      // Print Inicia Motor
   delay (500);                               // atraso 0,5 segundos
 }
 
-//------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_CFC_inicio ()                       // mostra CFC_Início
-{
+// mostra CFC_Início
+void LCD_CFC_inicio () {
   LCD_posiciona(0, 0);                       // coluna 0 e linha 0
   lcd.print("--------------------");         // mostra no LCD
   LCD_posiciona(0, 1);                       // coluna 0 e linha 1
@@ -286,15 +277,13 @@ void LCD_Mostra_causa(int cod_causa, char tag_causa, char nome_causa_LN2, char n
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_Mostra_Lista_Causas(int cod_causa, char tag_causa, char nome_causa_LN2, char nome_causa_LN3)
-{
+void LCD_Mostra_Lista_Causas(int cod_causa, char tag_causa, char nome_causa_LN2, char nome_causa_LN3) {
   cod_causa     = 0;
   tag_causa     = "";
   nome_causa_LN2 = "";
   nome_causa_LN3 = "";
 
-  for (cod_causa == 0; cod_causa < 15; cod_causa++)
-  {
+  for (cod_causa == 0; cod_causa < 15; cod_causa++) {
     procedimento_tag_causa;
     LCD_Mostra_causa(cod_causa, tag_causa, nome_causa_LN2, nome_causa_LN3);
     delay(2000);
@@ -309,7 +298,7 @@ void Demo_Telas (char versao_SOLAR)           // Demo das telas de testes
 #else
   lcd.begin(20, 4);                           // inicializa Display LCD 20x4
 #endif
-  LCD_Inicial (versao_SOLAR);                 // Tela inicial no display LCD
+  LCD_Inicial(versao_SOLAR);                 // Tela inicial no display LCD
   delay (2000);                               // atraso 2 segundos
   LCD_HomePosition ();
   delay (3000);                               // atraso 2 segundos
@@ -328,10 +317,8 @@ void Demo_Telas (char versao_SOLAR)           // Demo das telas de testes
   LCD_mostra();
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------------------------------------------
-void procedimento_tag_causa(int cod_causa, char tag_causa, char nome_causa_LN2, char nome_causa_LN3) // Lê o tipo de causa
-{
+// Lê o tipo de causa
+void procedimento_tag_causa(int cod_causa, char tag_causa, char nome_causa_LN2, char nome_causa_LN3) {
   // Mostra o Tag da causa
   //limite de 20 caracteres                             12345678901234567890                   12345678901234567890
   if (cod_causa = 0) {
@@ -411,11 +398,36 @@ void procedimento_tag_causa(int cod_causa, char tag_causa, char nome_causa_LN2, 
   }
 }
 
-//-------------------------------------------------------------------------------------------------------------------------------------
-void procedimento_ler_pot_TP(float valor_pot_TP, float potenciometro_Plato, float Tempo_seg_Plato_NOK) //Lê a entrada do potenciômetro do Tempo de Plato
-{
+//Lê a entrada do potenciômetro do Tempo de Plato
+void procedimento_ler_pot_TP(float valor_pot_TP, float potenciometro_Plato, float Tempo_seg_Plato_NOK) {
   valor_pot_TP  = analogRead(pot_Plato);                           // Lê o valor da tensão no potenciometro do tempo de platô A4
   //  Tempo_seg_Plato_NOK = map(valor_pot_TP, 0, 1023, 0, 3000);   // Converte a tensão em frequencia
   Tempo_seg_Plato_NOK = valor_pot_TP;
   // Tempo_seg_Plato_NOK=50;
+}
+
+void LCD_mostra_selecao_parametro () {
+  if (ponteiro_selecao == 1) {
+    LCD_posiciona(11, 0); lcd.print(">");         // coluna 11 e linha 0
+  }
+  if (ponteiro_selecao == 2) {
+    LCD_posiciona(11, 0); lcd.print(" ");         // coluna 11 e linha 0
+    LCD_posiciona(9, 1); lcd.print(">");          // coluna 9 e linha 1
+  }
+  if (ponteiro_selecao == 3) {
+    LCD_posiciona(9, 1); lcd.print(" ");          // coluna 9 e linha 1
+    LCD_posiciona(4, 2); lcd.print(">");          // coluna 4 e linha 2
+  }
+  if (ponteiro_selecao == 4) {
+    LCD_posiciona(4, 2); lcd.print(" ");          // coluna 4 e linha 2
+    LCD_posiciona(14, 2); lcd.print(">");         // coluna 14 e linha 2
+  }
+  if (ponteiro_selecao == 5) {
+    LCD_posiciona(14, 2); lcd.print(" ");         // coluna 14 e linha 2
+    LCD_posiciona(6, 3); lcd.print(">");          // coluna 6 e linha 3
+  }
+  if (ponteiro_selecao == 0) {
+    LCD_posiciona(6, 3); lcd.print(" ");          // coluna 6 e linha 3
+  }
+  LCD_mostra();
 }

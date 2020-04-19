@@ -7,6 +7,12 @@
 //  FUSO 25 mm - (25 mm de avanço por volta)
 //  Driver WED2404 configurado para 1/2 passo = 400 passos/volta
 //  Para avançar os 100 mm são necessários 4 voltas no motor ou 4 x 400 passos = 1600 passos
+//  VelocidadeInspiracão = 1600 / TempoInspiração
+//  Se TempoInspiração = 1s, VelocidadeInspiracão = 1600passos/segundo
+//  Se tempoInspiração = 0.8s, VelocidadeInspiração = 2000passos/segundo
+//  VelocidadeExpiração = VelocidadeInspiracão * RelaçãoIE;
+//  Lembrando! que a recomendação da biblioteca AccelStepp é de no máximo 1000passos/segundo
+//  E em 1/2 você perde torque do motor aproximadamente 70%, sem falar na perda de velocidade
 //  Para avançar os 130 mm são necessários 5,2 voltas no motor ou 5,2 x 400 passos = 2080 passos
 
 #include <FlexyStepper.h>                // Biblioteca controle do motor de passo

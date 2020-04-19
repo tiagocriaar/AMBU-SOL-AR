@@ -20,13 +20,13 @@ const byte pot_Plato         =  A4;         // Regulagem de tempo do platô
 //#define PIN_Y_MAX 15
 
 #if defined(IHM_RAMPS_128X64)
-  const byte port_Roraty_Encoder1  = 31;
-  const byte port_Roraty_Encoder2  = 33;
+  const byte port_Roraty_Encoder1  = 33;
+  const byte port_Roraty_Encoder2  = 31;  
   const byte port_Roraty_EncoderBT = 35;
 #else
   const byte LCD_address = 0x27;
-  const byte port_Roraty_Encoder1= 6;
-  const byte port_Roraty_Encoder2= 7;
+  const byte port_Roraty_Encoder1 = 6;
+  const byte port_Roraty_Encoder2 = 7;
 #endif
 
 const byte Btn_Avanca_MP   =  2;          // Botão de avanço do motor de passo (pino 2)
