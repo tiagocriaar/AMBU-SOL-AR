@@ -3,8 +3,8 @@
 
 #include "Arduino.h"
 
-#define IHM_RAMPS_128X64
-#define RAMPS_DRIVER
+//#define IHM_RAMPS_128X64
+//#define RAMPS_DRIVER
 
 const char  versao_SOLAR    =      " Versao 1_40a";
 
