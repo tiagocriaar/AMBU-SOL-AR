@@ -3,13 +3,13 @@
 //--------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------- Controle do Motor de Passo ------------------------------------------------------------------
 void desativa_Driver_Motor() {
-  digitalWrite(enable_MP, HIGH);           // Desativa o driver WD2404 = HIGH
+  digitalWrite(enable_MP, !HABILITA_MOTOR);           // Desativa o driver WD2404 = HIGH
   delay (10);                             // Atraso de 10 milisegundos
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------
 void ativa_Driver_Motor() {
-  digitalWrite(enable_MP, LOW);         // Ativa o driver WD2404 = LOW
+  digitalWrite(enable_MP, HABILITA_MOTOR);         // Ativa o driver WD2404 = LOW
   delay (10);                           // Atraso de 10  milisegundos
 }
 

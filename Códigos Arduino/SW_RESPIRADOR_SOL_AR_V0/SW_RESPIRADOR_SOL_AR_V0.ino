@@ -81,7 +81,7 @@ char  nome_efeito_LN2 =    0;
 char  nome_efeito_LN3 =    0;
 
 /* Objeto para controle do teclado matricial */
-Keypad keypad = Keypad( makeKeymap(Keys), LinhaPINO, ColunaPINO, linhas, colunas );  // configuração do teclado
+Keypad keypad = Keypad( makeKeymap(Keys), LinhaPINO, ColunaPINO, 4, 4 );  // configuração do teclado
 
 /* Objeto para controle do encoder rotativo */
 RotaryEncoder encoder(port_Roraty_Encoder1, port_Roraty_Encoder2);              // pin CLK(A)= D6    pin DT(B)= D7  Encoder Rotativo
@@ -107,7 +107,7 @@ void setup() {
   #endif  
 
   /* Tela incialdo IHM */
-  LCD_Inicial (versao_SOLAR);            // Tela inicial no display LCD
+  LCD_Inicial ("");            // Tela inicial no display LCD
 
   /* Inicia comunicação serial para debug pelo monitor serial */
   Serial.begin(9600);
@@ -320,7 +320,7 @@ void respiradorAmbu ()                                                    // sim
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-void procedimento_tag_efeito(int cod_efeito, char tag_efeito, char nome_efeito_LN2, char nome_efeito_LN3)  // Lê o tipo de defeito
+void procedimento_tag_efeito(int cod_efeito, String tag_efeito, String nome_efeito_LN2, String nome_efeito_LN3)  // Lê o tipo de defeito
 {
   // Mostra o Tag do efeito
   //limite de 20 caracteres                                    12345678901234567890                    12345678901234567890

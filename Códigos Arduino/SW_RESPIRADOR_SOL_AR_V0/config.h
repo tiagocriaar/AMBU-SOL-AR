@@ -1,15 +1,43 @@
 #ifndef _CONFIG_H_
 #define _CONFIG_H_
-
 #include "Arduino.h"
 
-/* Comentar quando não estiver usando o IHM Gráfico */ 
-#define IHM_RAMPS_128X64
+/* Definição do hardware 
+  HARDWARE 0 definição oficial, 
+  ativa motor em HIGH
+  
+  HARDWARE 1 teste 1
+  ativa motor em LOW
+  
+  HARDWARE 2 defnição de teste de Albério
+  Usando Arduino Mega, RAMPS 1.4, LCD Grafico 128X64
+*/
 
-/* Comentar quando não estiver usando a RAMPS para o driver do motor */
-#define RAMPS_DRIVER
+/* Define qual hardwere para compilação */
+#ifndef HARDWARE
+  #define HARDWARE 0 //0=Hardware oficial, 1=teste1, 2=Teste Albério
+#endif
 
-const char versao_SOLAR[] = " Versao Zero";
+#ifdef HARDWARE
+  #if (HARDWARE == 0)
+    /* Define metodo de habilitação do motor */
+    #define HABILITA_MOTOR HIGH
+  #elif (HARDWARE == 1)
+    /* Define metodo de habilitação do motor */
+    #define HABILITA_MOTOR LOW
+  #elif (HARDWARE == 2)
+    /* Comentar quando não estiver usando o IHM Gráfico */ 
+    #define IHM_RAMPS_128X64
+
+    /* Comentar quando não estiver usando a RAMPS para o driver do motor */
+    #define RAMPS_DRIVER
+
+    /* Define metodo de habilitação do motor */
+    #define HABILITA_MOTOR LOW
+  #endif  
+#endif  
+
+//String versao_SOLAR = " Versao Zero";
 
 const byte pot_pressao_AMBU  =  A1;         // Leitura de pressão do Ambu
 const byte pot_paciente      =  A2;         // Leitura de pressão do Paciente
@@ -73,17 +101,16 @@ const byte     R7_BYPASS       = 36;          // Relé de By-pass
 const byte     CFC_Inicio      = 39;          // Chave fim de curso início (home position)
 const byte     CFC_Fim         = 41;          // Chave fim de curso fim (limte pressão do AMBU)
 
-const byte linhas  = 4;                      // linhas do teclado
-const byte colunas = 4;                      // colunas do teclado
-const char Keys[linhas][colunas] =                 // Definicao dos valores das 16 teclas
-{
+const byte Keys[4][4] =                 // Definicao dos valores das 16 teclas
+  {
   {'1', '2', '3', 'A'},
   {'4', '5', '6', 'B'},
   {'7', '8', '9', 'C'},
   {'*', '0', '#', 'D'}
-};
+  };
 
-const byte LinhaPINO[linhas] =   {38, 40, 42, 44};      // Linhas do teclado D38 a D44
-const byte ColunaPINO[colunas] = {46, 48, 50, 52};      // Colunas do teclado D46 a D52
+
+const byte LinhaPINO[4] =   {38, 40, 42, 44};      // Linhas do teclado D38 a D44
+const byte ColunaPINO[4] = {46, 48, 50, 52};      // Colunas do teclado D46 a D52
 
 #endif

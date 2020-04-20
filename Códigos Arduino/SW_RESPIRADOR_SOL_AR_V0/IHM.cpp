@@ -27,7 +27,7 @@ void LCD_posiciona( byte c, byte l ) {
 }
 
 // Tela inicial no display LCD
-void LCD_Inicial (char versao_SOLAR) {
+void LCD_Inicial (String v) {
   LCD_limpa();  
   LCD_posiciona(0, 0);                                    // coluna 0 e linha 0
   lcd.print("*    RESPIRADOR    *");                      // mostra no LCD
@@ -277,7 +277,7 @@ void LCD_Mostra_causa(int cod_causa, char tag_causa, char nome_causa_LN2, char n
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-void LCD_Mostra_Lista_Causas(int cod_causa, char tag_causa, char nome_causa_LN2, char nome_causa_LN3) {
+void LCD_Mostra_Lista_Causas(int cod_causa, String tag_causa, String nome_causa_LN2, String nome_causa_LN3) {
   cod_causa     = 0;
   tag_causa     = "";
   nome_causa_LN2 = "";
@@ -291,14 +291,14 @@ void LCD_Mostra_Lista_Causas(int cod_causa, char tag_causa, char nome_causa_LN2,
 }
 
 //------------------------------------------------------------------------------------------------------------------------------------------
-void Demo_Telas (char versao_SOLAR)           // Demo das telas de testes
+void Demo_Telas (String v)           // Demo das telas de testes
 {
 #if defined(IHM_RAMPS_128X64)
   lcd.begin();
 #else
   lcd.begin(20, 4);                           // inicializa Display LCD 20x4
 #endif
-  LCD_Inicial(versao_SOLAR);                 // Tela inicial no display LCD
+  LCD_Inicial(v);                 // Tela inicial no display LCD
   delay (2000);                               // atraso 2 segundos
   LCD_HomePosition ();
   delay (3000);                               // atraso 2 segundos
@@ -318,7 +318,7 @@ void Demo_Telas (char versao_SOLAR)           // Demo das telas de testes
 }
 
 // Lê o tipo de causa
-void procedimento_tag_causa(int cod_causa, char tag_causa, char nome_causa_LN2, char nome_causa_LN3) {
+void procedimento_tag_causa(int cod_causa, String tag_causa, String nome_causa_LN2, String nome_causa_LN3) {
   // Mostra o Tag da causa
   //limite de 20 caracteres                             12345678901234567890                   12345678901234567890
   if (cod_causa = 0) {
